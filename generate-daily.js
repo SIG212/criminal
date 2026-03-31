@@ -20,7 +20,7 @@ const https = require('https');
 
 const GEMINI_API_KEY     = process.env.GEMINI_API_KEY;
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
-const ELEVENLABS_VOICE   = 'fjnwTZkKtQOJaYzGLa6n';
+const ELEVENLABS_VOICE   = 'pNInz6obpgDQGcFmaJgB';
 const ELEVENLABS_MODEL   = 'eleven_multilingual_v2';
 const MAX_CHARS_FREE     = 2500;
 
