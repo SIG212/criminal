@@ -102,8 +102,9 @@
     overflow: hidden;
     background: var(--bg2);
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
+    padding-top: 4rem;
   }
 
   .photo-frame {
@@ -221,7 +222,7 @@
     padding: 4rem 4rem 4rem 5rem;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     border-left: 1px solid var(--border);
     position: relative;
   }
@@ -254,11 +255,18 @@
     letter-spacing: 0.02em;
   }
 
+  .audio-section {
+    margin-top: 1.5rem;
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-top: none;
+  }
+
   .divider {
     width: 48px;
     height: 1px;
     background: var(--gold);
-    margin-bottom: 2rem;
+    margin: 1.5rem 0;
     opacity: 0.5;
   }
 
@@ -501,21 +509,7 @@
     <h1 class="criminal-name">Ioan<br>Sârca</h1>
     <div class="criminal-alias">"The Monster from Valcău"</div>
 
-    <div class="divider"></div>
-
-    <div class="article-body" id="article-text">
-      <p>He came from the fields of Sălaj, a province of small villages and smaller ambitions, and he carried that blankness with him all the way to Bucharest, all the way to Oradea, all the way to the courtroom where judges struggled to find a word adequate to what he was. Ioan Sârca was born on 9 March 1911 in Valcău de Sus, near Șimleu Silvaniei. He was illiterate. He had worked at a factory, done military service, married, fathered a child, divorced. On paper, a life of minor failures. Beneath the paper, something that had no name yet in Romanian criminology.</p>
-
-      <p>His first attempt at violence, in August 1943, was a failure — a young man named Gheorghe Boros managed to escape and report him to the local gendarmerie. They filed the complaint and did nothing. It was the first of many institutional silences that would cost lives. Sârca understood, in the wordless way of predators, that the system had handed him a license. He did not waste it. Over the next two years, working the edges of Bucharest's wartime chaos — a city of displacement, false papers, and overwhelmed police — he lured adolescents to secluded spots, bound them, raped them, and strangled them, then stripped their clothes and sold them at the city's markets. By 1944, eleven young men were dead.</p>
-
-      <p>Arrested and convicted, he was sent to Văcărești prison. In 1945, sensing an opportunity in Romania's postwar chaos, he forged identity documents claiming Soviet citizenship, exploiting a directive ordering the release of Russian nationals held in Romanian jails. He walked out a free man under a false name. What followed was not a man on the run — it was a man on a hunt. He moved to Transylvania, luring 18-year-old Vasile Sorim to the slopes of Tâmpa Mountain in Brașov with the promise of work, where he raped and strangled him, then wrapped a wire around his neck and hung him from a tree. By September 1945 he had settled in Oradea, with new papers and a new name, and the same appetite.</p>
-
-      <p>In Oradea he hunted from the train station, the hospital entrance, the flea market — anywhere that boys arrived alone from the countryside, looking for work, trusting a well-dressed stranger's promise of a job. The Apateului forest received them. The cornfields outside Sântandrei received them. Juhas Mihai, sixteen, lured with the promise of animal skins from Russia. Florian Moric, sixteen, offered a position as telegraph operator. Ioan Bordac, sixteen — the same lie, a different field. Gheorghe Vașca, fifteen. Lazăr Momenciu, eighteen. Each one found later under branches and leaves, stripped, the clothes already sold. Nine more dead before a soldier who had befriended him noticed Sârca in the company of a missing boy and went to the police.</p>
-
-      <p>Even in custody, Sârca tried to redirect the investigation — inventing a story about a Jewish doctor who collected blood from victims to revitalize Holocaust survivors. The fabrication collapsed immediately. He confessed. He was sentenced to two terms of life imprisonment — terms no Romanian court would agree to merge, even decades later, after it emerged he had attempted to rape and kill a fellow prisoner while incarcerated. The psychiatrists who examined him were unambiguous: fully sane, fully conscious, a sadistic assassin with preserved memory and no mental disease. He died in 1991, at eighty years old, behind bars, without regret. Romania's most prolific serial killer did not leave through the front door. The country made sure of that, one way or another.</p>
-    </div>
-
-    <!-- AUDIO PLAYER -->
+    <!-- AUDIO PLAYER — sub nume -->
     <div class="audio-section">
       <div class="audio-label">Listen to this profile</div>
       <div class="player-row">
@@ -532,6 +526,20 @@
           <div class="player-status" id="player-status">Press play to listen</div>
         </div>
       </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="article-body" id="article-text">
+      <p>He came from the fields of Sălaj, a province of small villages and smaller ambitions, and he carried that blankness with him all the way to Bucharest, all the way to Oradea, all the way to the courtroom where judges struggled to find a word adequate to what he was. Ioan Sârca was born on 9 March 1911 in Valcău de Sus, near Șimleu Silvaniei. He was illiterate. He had worked at a factory, done military service, married, fathered a child, divorced. On paper, a life of minor failures. Beneath the paper, something that had no name yet in Romanian criminology.</p>
+
+      <p>His first attempt at violence, in August 1943, was a failure — a young man named Gheorghe Boros managed to escape and report him to the local gendarmerie. They filed the complaint and did nothing. It was the first of many institutional silences that would cost lives. Sârca understood, in the wordless way of predators, that the system had handed him a license. He did not waste it. Over the next two years, working the edges of Bucharest's wartime chaos — a city of displacement, false papers, and overwhelmed police — he lured adolescents to secluded spots, bound them, raped them, and strangled them, then stripped their clothes and sold them at the city's markets. By 1944, eleven young men were dead.</p>
+
+      <p>Arrested and convicted, he was sent to Văcărești prison. In 1945, sensing an opportunity in Romania's postwar chaos, he forged identity documents claiming Soviet citizenship, exploiting a directive ordering the release of Russian nationals held in Romanian jails. He walked out a free man under a false name. What followed was not a man on the run — it was a man on a hunt. He moved to Transylvania, luring 18-year-old Vasile Sorim to the slopes of Tâmpa Mountain in Brașov with the promise of work, where he raped and strangled him, then wrapped a wire around his neck and hung him from a tree. By September 1945 he had settled in Oradea, with new papers and a new name, and the same appetite.</p>
+
+      <p>In Oradea he hunted from the train station, the hospital entrance, the flea market — anywhere that boys arrived alone from the countryside, looking for work, trusting a well-dressed stranger's promise of a job. The Apateului forest received them. The cornfields outside Sântandrei received them. Juhas Mihai, sixteen, lured with the promise of animal skins from Russia. Florian Moric, sixteen, offered a position as telegraph operator. Ioan Bordac, sixteen — the same lie, a different field. Gheorghe Vașca, fifteen. Lazăr Momenciu, eighteen. Each one found later under branches and leaves, stripped, the clothes already sold. Nine more dead before a soldier who had befriended him noticed Sârca in the company of a missing boy and went to the police.</p>
+
+      <p>Even in custody, Sârca tried to redirect the investigation — inventing a story about a Jewish doctor who collected blood from victims to revitalize Holocaust survivors. The fabrication collapsed immediately. He confessed. He was sentenced to two terms of life imprisonment — terms no Romanian court would agree to merge, even decades later, after it emerged he had attempted to rape and kill a fellow prisoner while incarcerated. The psychiatrists who examined him were unambiguous: fully sane, fully conscious, a sadistic assassin with preserved memory and no mental disease. He died in 1991, at eighty years old, behind bars, without regret. Romania's most prolific serial killer did not leave through the front door. The country made sure of that, one way or another.</p>
     </div>
 
     <!-- TAGS -->
@@ -551,23 +559,14 @@
 </footer>
 
 <script>
-  // ─────────────────────────────────────────────
-  // 🔑 PUNE KEY-UL TĂU AICI
-  const GOOGLE_TTS_API_KEY = 'PUNE_KEY_UL_TAU_AICI';
-  // ─────────────────────────────────────────────
-
-  const VOICE_NAME    = 'en-US-Wavenet-D';   // grav, masculin, noir
-  const SPEAKING_RATE = 0.88;                 // ritm lent, apăsat
-  const PITCH         = -2.0;                 // ton mai jos
-
-  let audioEl       = null;
-  let isPlaying     = false;
+  let audioEl = null;
+  let isPlaying = false;
   let progressInterval = null;
 
-  const playBtn    = document.getElementById('play-btn');
-  const playIcon   = document.getElementById('play-icon');
+  const playBtn     = document.getElementById('play-btn');
+  const playIcon    = document.getElementById('play-icon');
   const progressBar = document.getElementById('progress-bar');
-  const statusEl   = document.getElementById('player-status');
+  const statusEl    = document.getElementById('player-status');
   const articleText = document.getElementById('article-text');
 
   const PLAY_ICON  = `<polygon points="5,3 19,12 5,21"/>`;
@@ -578,63 +577,32 @@
   }
 
   async function toggleAudio() {
-    if (isPlaying) {
-      pausePlayer();
-      return;
-    }
-
-    // Dacă avem deja audio încărcat (pause → resume)
-    if (audioEl && audioEl.src && audioEl.paused) {
-      resumePlayer();
-      return;
-    }
-
+    if (isPlaying) { pausePlayer(); return; }
+    if (audioEl && audioEl.src && audioEl.paused) { resumePlayer(); return; }
     await fetchAndPlay();
   }
 
   async function fetchAndPlay() {
-    if (GOOGLE_TTS_API_KEY === 'PUNE_KEY_UL_TAU_AICI') {
-      statusEl.textContent = 'Adaugă API key-ul în fișier (linia GOOGLE_TTS_API_KEY).';
-      return;
-    }
-
-    statusEl.textContent = 'Se încarcă vocea...';
+    statusEl.textContent = 'Loading voice...';
     playBtn.disabled = true;
 
     try {
       const text = getArticleText();
-      const res = await fetch(
-        `https://texttospeech.googleapis.com/v1/text:synthesize?key=${GOOGLE_TTS_API_KEY}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            input: { text },
-            voice: {
-              languageCode: 'en-US',
-              name: VOICE_NAME
-            },
-            audioConfig: {
-              audioEncoding: 'MP3',
-              speakingRate: SPEAKING_RATE,
-              pitch: PITCH,
-              effectsProfileId: ['headphone-class-device']
-            }
-          })
-        }
-      );
+      const res = await fetch('/api/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text })
+      });
 
       if (!res.ok) {
         const err = await res.json();
-        statusEl.textContent = `Eroare API: ${err.error?.message || res.status}`;
+        statusEl.textContent = `Error: ${err.error || res.status}`;
         playBtn.disabled = false;
         return;
       }
 
       const { audioContent } = await res.json();
-      const src = `data:audio/mp3;base64,${audioContent}`;
-
-      audioEl = new Audio(src);
+      audioEl = new Audio(`data:audio/mp3;base64,${audioContent}`);
 
       audioEl.onloadedmetadata = () => {
         playBtn.disabled = false;
@@ -647,7 +615,7 @@
       };
 
       audioEl.onerror = () => {
-        statusEl.textContent = 'Eroare la redare.';
+        statusEl.textContent = 'Playback error.';
         stopPlayer();
       };
 
@@ -657,7 +625,7 @@
       playIcon.innerHTML = PAUSE_ICON;
 
     } catch (e) {
-      statusEl.textContent = 'Eroare de rețea. Verifică key-ul și conexiunea.';
+      statusEl.textContent = 'Network error. Check your connection.';
       playBtn.disabled = false;
     }
   }
@@ -665,13 +633,10 @@
   function startProgressTracking() {
     clearInterval(progressInterval);
     progressBar.style.width = '0%';
-
     progressInterval = setInterval(() => {
       if (!audioEl || audioEl.duration === 0) return;
-
       const pct = (audioEl.currentTime / audioEl.duration) * 100;
       progressBar.style.width = Math.min(pct, 99) + '%';
-
       const remaining = Math.max(0, Math.round(audioEl.duration - audioEl.currentTime));
       const m = Math.floor(remaining / 60);
       const s = remaining % 60;
