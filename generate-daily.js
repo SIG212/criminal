@@ -3,12 +3,12 @@
  * -----------------
  * 1. Picks today's criminal from criminals.json
  * 2. Gemini 2.5 Pro → full article + short audio summary
- * 3. ElevenLabs → audio/{{slug}}.mp3 (from short summary, fits free tier)
+ * 3. Azure TTS → audio/{{slug}}.mp3 (full article, no char limit on free tier)
  * 4. Builds criminals/{{slug}}.html from template-criminal.html
  * 5. Builds index.html from template-index.html (homepage)
  * 6. Rebuilds archive.html from template-archive.html
  *
- * Env vars: GEMINI_API_KEY, ELEVENLABS_API_KEY
+ * Env vars: GEMINI_API_KEY, AZURE_SPEECH_KEY, AZURE_SPEECH_REGION
  */
 
 const fs    = require('fs');
@@ -17,11 +17,10 @@ const https = require('https');
 
 // ── Config ────────────────────────────────────────────────────────────────────
 
-const GEMINI_API_KEY     = process.env.GEMINI_API_KEY;
-const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
-const ELEVENLABS_VOICE   = 'pNInz6obpgDQGcFmaJgB'; // Adam — free tier
-const ELEVENLABS_MODEL   = 'eleven_multilingual_v2';
-const MAX_AUDIO_CHARS    = 2400; // safe under ElevenLabs free tier limit
+const GEMINI_API_KEY      = process.env.GEMINI_API_KEY;
+const AZURE_SPEECH_KEY    = process.env.AZURE_SPEECH_KEY;
+const AZURE_SPEECH_REGION = process.env.AZURE_SPEECH_REGION; // e.g. "eastus"
+const AZURE_VOICE         = 'en-GB-RyanNeural'; // cinematic British voice
 
 // ── HTTP helper ───────────────────────────────────────────────────────────────
 
@@ -100,21 +99,9 @@ Think Thomas Harris. No headers, no bullets, only flowing prose. Always in Engli
 Wikipedia context: ${criminal.wiki_summary || 'No context available.'}
 Facts: active ${criminal.period}, ${criminal.victims} victims.
 
-PIECE 1 — FULL ARTICLE (label it exactly: FULL_ARTICLE_START)
-5 paragraphs, 600-800 words, literary noir prose.
-Cover: origins, crimes, investigation, capture, psychological/social meaning.
-Cinematic first sentence. No preamble.
-
-PIECE 2 — AUDIO SUMMARY (label it exactly: AUDIO_SUMMARY_START)
-2 paragraphs, maximum 350 words. Same noir style but tighter.
-This will be read aloud — write for the ear, not the eye.
-No em-dashes (use commas instead). No complex punctuation.
-
-Format your response EXACTLY like this:
-FULL_ARTICLE_START
-[full article here]
-AUDIO_SUMMARY_START
-[audio summary here]`;
+Write 5 paragraphs, 600-800 words, literary noir prose.
+Cover: origins, crimes, investigation, capture, psychological and social meaning.
+Cinematic first sentence. No preamble. Pure flowing prose.`;
 
   const body = {
     system_instruction: { parts: [{ text: systemPrompt }] },
@@ -142,49 +129,75 @@ AUDIO_SUMMARY_START
     process.exit(1);
   }
 
-  // Parse the two sections
-  const fullMatch  = text.match(/FULL_ARTICLE_START\s*([\s\S]*?)(?=AUDIO_SUMMARY_START|$)/);
-  const audioMatch = text.match(/AUDIO_SUMMARY_START\s*([\s\S]*?)$/);
-
-  const fullArticle  = fullMatch  ? fullMatch[1].trim()  : text.trim();
-  const audioSummary = audioMatch ? audioMatch[1].trim() : getFirstParagraph(text);
-
-  console.log(`Full article: ${fullArticle.length} chars`);
-  console.log(`Audio summary: ${audioSummary.length} chars`);
-
-  if (audioSummary.length > MAX_AUDIO_CHARS) {
-    console.warn(`Audio summary truncated from ${audioSummary.length} to ${MAX_AUDIO_CHARS}`);
-  }
-
-  return {
-    fullArticle,
-    audioSummary: audioSummary.slice(0, MAX_AUDIO_CHARS)
-  };
+  console.log(`Article generated: ${text.length} chars`);
+  return text.trim();
 }
 
-// ── ElevenLabs: generate audio from summary ───────────────────────────────────
+// ── Azure TTS: generate audio from full article ───────────────────────────────
 
 async function generateAudio(slug, text) {
-  console.log('Calling ElevenLabs...');
+  console.log('Calling Azure TTS...');
 
-  const body = JSON.stringify({
-    text,
-    model_id: ELEVENLABS_MODEL,
-    voice_settings: {
-      stability: 0.55, similarity_boost: 0.80,
-      style: 0.25, use_speaker_boost: true, speed: 1.15
-    }
+  // Step 1: get access token
+  const tokenRes = await new Promise((resolve, reject) => {
+    const req = https.request(
+      {
+        hostname: `${AZURE_SPEECH_REGION}.api.cognitive.microsoft.com`,
+        path: '/sts/v1.0/issueToken',
+        method: 'POST',
+        headers: {
+          'Ocp-Apim-Subscription-Key': AZURE_SPEECH_KEY,
+          'Content-Length': 0
+        }
+      },
+      (res) => {
+        const chunks = [];
+        res.on('data', c => chunks.push(c));
+        res.on('end', () => resolve({ status: res.statusCode, body: Buffer.concat(chunks).toString() }));
+      }
+    );
+    req.on('error', reject);
+    req.end();
   });
 
+  if (tokenRes.status !== 200) {
+    console.error('Azure token error:', tokenRes.status, tokenRes.body);
+    process.exit(1);
+  }
+
+  const accessToken = tokenRes.body;
+
+  // Step 2: synthesize speech with SSML
+  // Clean text for SSML — remove special chars that break XML
+  const cleanText = text
+    .replace(/&/g, 'and')
+    .replace(/</g, '')
+    .replace(/>/g, '')
+    .replace(/"/g, '')
+    .replace(/'/g, "'");
+
+  const ssml = `<speak version='1.0' xml:lang='en-GB'>
+  <voice name='${AZURE_VOICE}'>
+    <prosody rate='0.95' pitch='-5%'>
+      ${cleanText}
+    </prosody>
+  </voice>
+</speak>`;
+
   const { status, buffer } = await httpsPost(
-    'api.elevenlabs.io',
-    `/v1/text-to-speech/${ELEVENLABS_VOICE}`,
-    { 'xi-api-key': ELEVENLABS_API_KEY, 'Content-Type': 'application/json', 'Accept': 'audio/mpeg' },
-    body
+    `${AZURE_SPEECH_REGION}.tts.speech.microsoft.com`,
+    '/cognitiveservices/v1',
+    {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/ssml+xml',
+      'X-Microsoft-OutputFormat': 'audio-48khz-192kbitrate-mono-mp3',
+      'User-Agent': 'CriminalOfTheDay'
+    },
+    ssml
   );
 
   if (status !== 200) {
-    console.error('ElevenLabs error:', buffer.toString());
+    console.error(`Azure TTS error ${status}:`, buffer.toString());
     process.exit(1);
   }
 
@@ -328,10 +341,10 @@ function buildArchive() {
 
 (async () => {
   try {
-    const { fullArticle, audioSummary } = await generateContent(criminal);
-    await generateAudio(criminal.slug, audioSummary);
-    buildCriminalPage(criminal, fullArticle);
-    buildHomepage(criminal, fullArticle);
+    const article = await generateContent(criminal);
+    await generateAudio(criminal.slug, article);
+    buildCriminalPage(criminal, article);
+    buildHomepage(criminal, article);
     buildArchive();
     console.log('\nAll done!');
   } catch (err) {
