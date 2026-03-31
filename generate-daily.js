@@ -20,7 +20,7 @@ const https = require('https');
 
 const GEMINI_API_KEY     = process.env.GEMINI_API_KEY;
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
-const ELEVENLABS_VOICE   = 'fjnwTZkKtQOJaYzGLa6nB'; // Adam
+const ELEVENLABS_VOICE   = 'pNInz6obpgDQGcFmaJgB'; // Adam
 const ELEVENLABS_MODEL   = 'eleven_multilingual_v2';
 const MAX_CHARS_FREE     = 2500; // ElevenLabs free tier limit per request
 
@@ -116,8 +116,11 @@ Style rules:
 - Pure flowing prose, no headers, no bullets`;
 
   const body = {
+    system_instruction: {
+      parts: [{ text: systemPrompt }]
+    },
     contents: [
-      { role: 'user', parts: [{ text: systemPrompt + '\n\n' + userPrompt }] }
+      { role: 'user', parts: [{ text: userPrompt }] }
     ],
     generationConfig: {
       temperature: 0.85,
@@ -142,6 +145,7 @@ Style rules:
   const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
   if (!text) {
     console.error('No text in Gemini response');
+    console.error('Full response:', JSON.stringify(data, null, 2));
     process.exit(1);
   }
 
