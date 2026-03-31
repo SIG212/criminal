@@ -247,6 +247,11 @@ function buildCriminalPage(criminal, fullArticle) {
     .map(t => `      <span class="tag">${escapeHtml(t)}</span>`)
     .join('\n');
 
+  const sourcesHtml = [
+    criminal.wiki_url ? `      <a href="${criminal.wiki_url}" target="_blank" rel="noopener">Wikipedia — ${escapeHtml(criminal.name)}</a>` : null,
+    `      <a href="https://en.wikipedia.org/wiki/List_of_serial_killers_by_country" target="_blank" rel="noopener">Wikipedia — List of Serial Killers by Country</a>`
+  ].filter(Boolean).join('\n');
+
   const html = template
     .replace(/\{\{NAME\}\}/g,          escapeHtml(criminal.name))
     .replace(/\{\{NAME_DISPLAY\}\}/g,  nameDisplay(criminal.name))
@@ -262,6 +267,7 @@ function buildCriminalPage(criminal, fullArticle) {
     .replace(/\{\{YEAR\}\}/g,          String(year))
     .replace(/\{\{META_DESCRIPTION\}\}/g, escapeHtml(metaDesc))
     .replace(/\{\{ARTICLE\}\}/g,       textToParagraphs(fullArticle))
+    .replace(/\{\{SOURCES\}\}/g,       sourcesHtml)
     .replace(/\{\{TAGS\}\}/g,          tagsHtml);
 
   const criminalsDir = path.join(__dirname, 'criminals');
@@ -284,15 +290,18 @@ function buildHomepage(criminal, fullArticle) {
   const aliasDisplay = criminal.alias ? `"${escapeHtml(criminal.alias)}"` : '&nbsp;';
   const metaDesc    = `Today on Criminal of the Day: ${criminal.name}${criminal.alias ? ` (${criminal.alias})` : ''} from ${criminal.country}.`;
 
-  // Preview = first 2 paragraphs only
-  const previewText = fullArticle.split(/\n\n+/).slice(0, 2).join('\n\n');
-
   const tagsHtml = (criminal.tags || [])
     .filter(t => t && t.length > 1)
     .map(t => `      <span class="tag">${escapeHtml(t)}</span>`)
     .join('\n');
 
-  // Recent cards — last 7 published criminals (those with existing pages)
+  // Sources
+  const sourcesHtml = [
+    criminal.wiki_url ? `      <a href="${criminal.wiki_url}" target="_blank" rel="noopener">Wikipedia — ${escapeHtml(criminal.name)}</a>` : null,
+    `      <a href="https://en.wikipedia.org/wiki/List_of_serial_killers_by_country" target="_blank" rel="noopener">Wikipedia — List of Serial Killers by Country</a>`
+  ].filter(Boolean).join('\n');
+
+  // Recent cards — last 7 published criminals
   const criminalsDir = path.join(__dirname, 'criminals');
   const recentCards = criminals
     .filter(c => c.day < criminal.day && fs.existsSync(path.join(criminalsDir, `${c.slug}.html`)))
@@ -320,7 +329,8 @@ function buildHomepage(criminal, fullArticle) {
     .replace(/\{\{DAY_PADDED\}\}/g,    dayPadded)
     .replace(/\{\{YEAR\}\}/g,          String(year))
     .replace(/\{\{META_DESCRIPTION\}\}/g, escapeHtml(metaDesc))
-    .replace(/\{\{ARTICLE_PREVIEW\}\}/g,  textToParagraphs(previewText))
+    .replace(/\{\{ARTICLE\}\}/g,       textToParagraphs(fullArticle))
+    .replace(/\{\{SOURCES\}\}/g,       sourcesHtml)
     .replace(/\{\{TAGS\}\}/g,          tagsHtml)
     .replace(/\{\{RECENT_CARDS\}\}/g,  recentCards || '    <div style="padding:2rem;color:#4a3f32;font-family:\'Space Mono\',monospace;font-size:9px;">No previous cases yet.</div>');
 
