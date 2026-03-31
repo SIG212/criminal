@@ -124,7 +124,7 @@ Style rules:
     ],
     generationConfig: {
       temperature: 0.85,
-      maxOutputTokens: 1200
+      maxOutputTokens: 8192
     }
   };
 
