@@ -559,98 +559,33 @@
 </footer>
 
 <script>
-  let audioEl = null;
-  let isPlaying = false;
+  const audioEl    = new Audio('/audio/current.mp3');
+  let isPlaying    = false;
   let progressInterval = null;
 
   const playBtn     = document.getElementById('play-btn');
   const playIcon    = document.getElementById('play-icon');
   const progressBar = document.getElementById('progress-bar');
   const statusEl    = document.getElementById('player-status');
-  const articleText = document.getElementById('article-text');
 
   const PLAY_ICON  = `<polygon points="5,3 19,12 5,21"/>`;
   const PAUSE_ICON = `<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>`;
 
-  function getArticleText() {
-    return (articleText.innerText || articleText.textContent).trim();
-  }
+  audioEl.preload = 'metadata'; // încarcă durata fără să descarce tot fișierul
 
-  async function toggleAudio() {
+  audioEl.onended = () => {
+    progressBar.style.width = '100%';
+    setTimeout(stopPlayer, 400);
+  };
+
+  audioEl.onerror = () => {
+    statusEl.textContent = 'Audio not available yet.';
+    stopPlayer();
+  };
+
+  function toggleAudio() {
     if (isPlaying) { pausePlayer(); return; }
-    if (audioEl && audioEl.src && audioEl.paused) { resumePlayer(); return; }
-    await fetchAndPlay();
-  }
-
-  async function fetchAndPlay() {
-    statusEl.textContent = 'Loading voice...';
-    playBtn.disabled = true;
-
-    try {
-      const text = getArticleText();
-      const res = await fetch('/api/tts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text })
-      });
-
-      if (!res.ok) {
-        const err = await res.json();
-        statusEl.textContent = `Error: ${err.error || res.status}`;
-        playBtn.disabled = false;
-        return;
-      }
-
-      const { audioContent } = await res.json();
-      audioEl = new Audio(`data:audio/mp3;base64,${audioContent}`);
-
-      audioEl.onloadedmetadata = () => {
-        playBtn.disabled = false;
-        startProgressTracking();
-      };
-
-      audioEl.onended = () => {
-        progressBar.style.width = '100%';
-        setTimeout(stopPlayer, 400);
-      };
-
-      audioEl.onerror = () => {
-        statusEl.textContent = 'Playback error.';
-        stopPlayer();
-      };
-
-      audioEl.play();
-      isPlaying = true;
-      playBtn.classList.add('playing');
-      playIcon.innerHTML = PAUSE_ICON;
-
-    } catch (e) {
-      statusEl.textContent = 'Network error. Check your connection.';
-      playBtn.disabled = false;
-    }
-  }
-
-  function startProgressTracking() {
-    clearInterval(progressInterval);
-    progressBar.style.width = '0%';
-    progressInterval = setInterval(() => {
-      if (!audioEl || audioEl.duration === 0) return;
-      const pct = (audioEl.currentTime / audioEl.duration) * 100;
-      progressBar.style.width = Math.min(pct, 99) + '%';
-      const remaining = Math.max(0, Math.round(audioEl.duration - audioEl.currentTime));
-      const m = Math.floor(remaining / 60);
-      const s = remaining % 60;
-      statusEl.textContent = `${m}:${s.toString().padStart(2, '0')} remaining`;
-    }, 300);
-  }
-
-  function pausePlayer() {
-    if (audioEl) audioEl.pause();
-    isPlaying = false;
-    clearInterval(progressInterval);
-    playBtn.classList.remove('playing');
-    playIcon.innerHTML = PLAY_ICON;
-    statusEl.textContent = 'Paused — press play to continue';
+    resumePlayer();
   }
 
   function resumePlayer() {
@@ -661,15 +596,37 @@
     startProgressTracking();
   }
 
-  function stopPlayer() {
+  function pausePlayer() {
+    audioEl.pause();
     isPlaying = false;
-    playBtn.classList.remove('playing');
-    playBtn.disabled = false;
-    playIcon.innerHTML = PLAY_ICON;
     clearInterval(progressInterval);
+    playBtn.classList.remove('playing');
+    playIcon.innerHTML = PLAY_ICON;
+    statusEl.textContent = 'Paused — press play to continue';
+  }
+
+  function stopPlayer() {
+    audioEl.pause();
+    audioEl.currentTime = 0;
+    isPlaying = false;
+    clearInterval(progressInterval);
+    playBtn.classList.remove('playing');
+    playIcon.innerHTML = PLAY_ICON;
     progressBar.style.width = '0%';
-    audioEl = null;
     statusEl.textContent = 'Press play to listen';
+  }
+
+  function startProgressTracking() {
+    clearInterval(progressInterval);
+    progressInterval = setInterval(() => {
+      if (!audioEl.duration) return;
+      const pct = (audioEl.currentTime / audioEl.duration) * 100;
+      progressBar.style.width = Math.min(pct, 99) + '%';
+      const remaining = Math.max(0, Math.round(audioEl.duration - audioEl.currentTime));
+      const m = Math.floor(remaining / 60);
+      const s = remaining % 60;
+      statusEl.textContent = `${m}:${s.toString().padStart(2, '0')} remaining`;
+    }, 300);
   }
 </script>
 </body>
