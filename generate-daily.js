@@ -127,7 +127,7 @@ Style rules:
 
   const { status, buffer } = await httpsPost(
     'generativelanguage.googleapis.com',
-    `/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+    `/v1beta/models/gemini-2.5-pro:generateContent?key=${GEMINI_API_KEY}`,
     { 'Content-Type': 'application/json' },
     body
   );
