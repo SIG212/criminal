@@ -43,7 +43,32 @@
   }
   .masthead-nav a:hover { color: var(--gold); }
 
-  /* HERO */
+  .welcome-banner {
+    position: relative; z-index: 1;
+    border-bottom: 1px solid var(--border);
+    padding: 1.2rem 2rem;
+    display: flex; align-items: center; justify-content: space-between; gap: 2rem;
+    background: var(--red-pale);
+  }
+  .welcome-text {
+    font-family: 'Crimson Pro', serif; font-size: 16px;
+    color: rgba(242,234,216,0.7); line-height: 1.5;
+  }
+  .welcome-text strong {
+    font-family: 'Playfair Display', serif; font-size: 18px;
+    font-weight: 700; color: var(--paper); display: block; margin-bottom: 2px;
+  }
+  .welcome-links { display: flex; gap: 1rem; flex-shrink: 0; }
+  .welcome-link {
+    font-family: 'Space Mono', monospace; font-size: 9px;
+    letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none;
+    padding: 6px 14px; border: 1px solid var(--border-strong); color: var(--gold);
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .welcome-link:hover { background: var(--gold); color: var(--bg); border-color: var(--gold); }
+  @media (max-width: 600px) {
+    .welcome-banner { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  }
   .hero {
     display: grid; grid-template-columns: 1fr 1fr;
     min-height: calc(100vh - 60px); position: relative; z-index: 1;
@@ -132,22 +157,29 @@
   .player-bar { height: 100%; background: var(--red-light); width: 0%; transition: width 0.3s linear; }
   .player-status { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: var(--ink-muted); margin-top: 6px; }
   .divider { width: 48px; height: 1px; background: var(--gold); margin: 1.5rem 0; opacity: 0.5; }
-  .article-preview {
-    font-size: 18px; line-height: 1.8; color: rgba(242,234,216,0.88); max-width: 560px;
+  .article-body {
+    font-size: 18px; line-height: 1.8;
+    color: rgba(242,234,216,0.88); max-width: 560px;
   }
-  .article-preview p { margin-bottom: 1.4rem; }
-  .article-preview p:first-child::first-letter {
+  .article-body p { margin-bottom: 1.4rem; }
+  .article-body p:first-child::first-letter {
     font-family: 'Playfair Display', Georgia, serif; font-size: 72px; font-weight: 900;
     float: left; line-height: 0.75; margin: 8px 10px 0 0; color: var(--red-light);
   }
-  .read-more {
-    display: inline-block; margin-top: 1rem;
-    font-family: 'Space Mono', monospace; font-size: 10px;
-    letter-spacing: 0.2em; color: var(--gold); text-decoration: none; text-transform: uppercase;
-    border-bottom: 1px solid var(--gold-dim); padding-bottom: 2px;
-    transition: color 0.2s, border-color 0.2s;
+  .sources {
+    margin-top: 2.5rem; padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
   }
-  .read-more:hover { color: var(--paper); border-color: var(--paper); }
+  .sources-label {
+    font-family: 'Space Mono', monospace; font-size: 9px;
+    letter-spacing: 0.3em; color: var(--gold-dim); text-transform: uppercase; margin-bottom: 10px;
+  }
+  .sources a {
+    display: block; font-family: 'Space Mono', monospace; font-size: 10px;
+    letter-spacing: 0.05em; color: var(--ink-muted); text-decoration: none;
+    margin-bottom: 6px; transition: color 0.2s;
+  }
+  .sources a:hover { color: var(--gold); }
   .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2rem; }
   .tag {
     font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.15em;
@@ -209,7 +241,7 @@
   .hero-text > * { animation: fade-in 0.6s ease both; }
   .day-label { animation-delay: 0.1s; } .criminal-name { animation-delay: 0.2s; }
   .criminal-alias { animation-delay: 0.3s; } .audio-section { animation-delay: 0.35s; }
-  .divider { animation-delay: 0.4s; } .article-preview { animation-delay: 0.45s; }
+  .divider { animation-delay: 0.4s; } .article-body { animation-delay: 0.45s; }
 
   @media (max-width: 860px) {
     .hero { grid-template-columns: 1fr; min-height: auto; }
@@ -229,6 +261,16 @@
     <a href="/archive.html">Archive</a>
   </nav>
 </header>
+
+<div class="welcome-banner">
+  <div class="welcome-text">
+    <strong>Criminal of the Day</strong>
+    Every day, one case. One country. One killer history forgot — or never knew.
+  </div>
+  <div class="welcome-links">
+    <a href="/archive.html" class="welcome-link">View Archive</a>
+  </div>
+</div>
 
 <main class="hero">
   <div class="hero-photo">
@@ -276,10 +318,14 @@
 
     <div class="divider"></div>
 
-    <div class="article-preview">
-{{ARTICLE_PREVIEW}}
+    <div class="article-body" id="article-text">
+{{ARTICLE}}
     </div>
-    <a href="/criminals/{{SLUG}}.html" class="read-more">Read full profile →</a>
+
+    <div class="sources">
+      <div class="sources-label">Sources</div>
+{{SOURCES}}
+    </div>
 
     <div class="tags">
 {{TAGS}}
