@@ -43,7 +43,32 @@
   }
   .masthead-nav a:hover { color: var(--gold); }
 
-  /* HERO */
+  .welcome-banner {
+    position: relative; z-index: 1;
+    border-bottom: 1px solid var(--border);
+    padding: 1.2rem 2rem;
+    display: flex; align-items: center; justify-content: space-between; gap: 2rem;
+    background: var(--red-pale);
+  }
+  .welcome-text {
+    font-family: 'Crimson Pro', serif; font-size: 16px;
+    color: rgba(242,234,216,0.7); line-height: 1.5;
+  }
+  .welcome-text strong {
+    font-family: 'Playfair Display', serif; font-size: 18px;
+    font-weight: 700; color: var(--paper); display: block; margin-bottom: 2px;
+  }
+  .welcome-links { display: flex; gap: 1rem; flex-shrink: 0; }
+  .welcome-link {
+    font-family: 'Space Mono', monospace; font-size: 9px;
+    letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none;
+    padding: 6px 14px; border: 1px solid var(--border-strong); color: var(--gold);
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .welcome-link:hover { background: var(--gold); color: var(--bg); border-color: var(--gold); }
+  @media (max-width: 600px) {
+    .welcome-banner { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  }
   .hero {
     display: grid; grid-template-columns: 1fr 1fr;
     min-height: calc(100vh - 60px); position: relative; z-index: 1;
@@ -132,22 +157,34 @@
   .player-bar { height: 100%; background: var(--red-light); width: 0%; transition: width 0.3s linear; }
   .player-status { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: var(--ink-muted); margin-top: 6px; }
   .divider { width: 48px; height: 1px; background: var(--gold); margin: 1.5rem 0; opacity: 0.5; }
-  .article-preview {
-    font-size: 18px; line-height: 1.8; color: rgba(242,234,216,0.88); max-width: 560px;
+  .article-body {
+    font-size: 18px; line-height: 1.8;
+    color: rgba(242,234,216,0.88); max-width: 560px;
   }
-  .article-preview p { margin-bottom: 1.4rem; }
-  .article-preview p:first-child::first-letter {
+  .article-body p { margin-bottom: 1.4rem; }
+  .section-header {
+    font-family: 'Space Mono', monospace; font-size: 9px;
+    letter-spacing: 0.35em; text-transform: uppercase;
+    color: var(--gold); margin: 2rem 0 0.6rem; font-weight: 400;
+  }
+  .article-body p:first-of-type::first-letter {
     font-family: 'Playfair Display', Georgia, serif; font-size: 72px; font-weight: 900;
     float: left; line-height: 0.75; margin: 8px 10px 0 0; color: var(--red-light);
   }
-  .read-more {
-    display: inline-block; margin-top: 1rem;
-    font-family: 'Space Mono', monospace; font-size: 10px;
-    letter-spacing: 0.2em; color: var(--gold); text-decoration: none; text-transform: uppercase;
-    border-bottom: 1px solid var(--gold-dim); padding-bottom: 2px;
-    transition: color 0.2s, border-color 0.2s;
+  .sources {
+    margin-top: 2.5rem; padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
   }
-  .read-more:hover { color: var(--paper); border-color: var(--paper); }
+  .sources-label {
+    font-family: 'Space Mono', monospace; font-size: 9px;
+    letter-spacing: 0.3em; color: var(--gold-dim); text-transform: uppercase; margin-bottom: 10px;
+  }
+  .sources a {
+    display: block; font-family: 'Space Mono', monospace; font-size: 10px;
+    letter-spacing: 0.05em; color: var(--ink-muted); text-decoration: none;
+    margin-bottom: 6px; transition: color 0.2s;
+  }
+  .sources a:hover { color: var(--gold); }
   .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2rem; }
   .tag {
     font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.15em;
@@ -209,7 +246,7 @@
   .hero-text > * { animation: fade-in 0.6s ease both; }
   .day-label { animation-delay: 0.1s; } .criminal-name { animation-delay: 0.2s; }
   .criminal-alias { animation-delay: 0.3s; } .audio-section { animation-delay: 0.35s; }
-  .divider { animation-delay: 0.4s; } .article-preview { animation-delay: 0.45s; }
+  .divider { animation-delay: 0.4s; } .article-body { animation-delay: 0.45s; }
 
   @media (max-width: 860px) {
     .hero { grid-template-columns: 1fr; min-height: auto; }
@@ -229,6 +266,16 @@
     <a href="/archive.html">Archive</a>
   </nav>
 </header>
+
+<div class="welcome-banner">
+  <div class="welcome-text">
+    <strong>Criminal of the Day</strong>
+    Every day, one case. One country. One killer history forgot — or never knew.
+  </div>
+  <div class="welcome-links">
+    <a href="/archive.html" class="welcome-link">View Archive</a>
+  </div>
+</div>
 
 <main class="hero">
   <div class="hero-photo">
@@ -276,12 +323,28 @@
 
     <div class="divider"></div>
 
-    <div class="article-preview">
-      <p>Ioan Sârca was born in 1911 in Valcău de Jos, a rural commune in Sălaj County, Romania. His early life was unremarkable, defined by the limited prospects available to the uneducated poor in the interwar period. Illiterate and possessing no specialized trade, he joined the ranks of transient laborers, finding work where he could in factories and industrial sites. He was a figure of little note, one of thousands of men whose lives were circumscribed by manual labor and economic instability. To his co-workers and the few who knew him, he presented a functional, if anonymous, facade. There was nothing in his known background to suggest a capacity for extreme violence. He navigated the social and political turmoil of a nation on the brink of war not as a participant, but as an observer on the lowest rungs of the societal ladder, a man whose primary concern was his own immediate survival.</p>
+    <div class="article-body" id="article-text">
+      <h2 class="section-header">Background</h2>
+      <p>Ioan Sârca was born in 1911 in Valcău de Jos, a village in Sălaj County, Romania. His life until his early thirties was unremarkable, defined by the limitations of his era and station. He was illiterate and earned a living through manual labour, primarily in factories where the demand for workers was constant and the oversight minimal. By all accounts, he was a physically nondescript man, one of the countless individuals displaced or seeking opportunity amidst the profound social and political turmoil of the Second World War. Romania, caught between the Axis and Allied powers, was a nation in flux. For a man like Sârca, the widespread poverty, the breakdown of community structures, and the constant movement of populations were not just background noise; they constituted the environment in which he would later operate, a landscape of anonymity and desperation that perfectly suited his purposes.</p>
 
-      <p>His documented homicidal activity began in 1943, coinciding with the height of Romania’s involvement in the Second World War. Sârca’s method was consistent and predicated on exploiting the desperation of the era. He targeted young boys and adolescents, typically those who were displaced, impoverished, or seeking work to support their families. He would approach them in industrial towns or near train stations with promises of employment, a lure that was highly effective in a climate of widespread hardship. Once he had gained a victim’s trust and led him to a secluded area, he would attack, strangling the boy to death. The violence was followed by a chillingly pragmatic act: he would strip the body of clothing and any other possessions of value. These items, often the only tangible assets the victims owned, were then sold at local market stalls. Investigators eventually uncovered a pattern of disappearances across multiple jurisdictions, but the remains were often discovered late, if at all, making identification difficult and a comprehensive victim count impossible. The final official tally exceeded twenty individuals, though the true number is believed to be higher.</p>
+      <h2 class="section-header">The Crimes</h2>
+      <p>His criminal activities began in 1943, escalating over the next two years into a pattern of predatory violence. Sârca’s method was simple and brutally effective. He targeted young boys and adolescents, typically those who were transient, impoverished, and visibly seeking work. He would approach them with promises of employment at a factory or a construction site, an offer that was difficult for the desperate to refuse. Once he had lured a victim to an isolated location—a field, an abandoned building, or the outskirts of a town—he would strangle them. The primary motive appeared to be profit, albeit on a grimly modest scale. After the murder, Sârca would strip the body of clothes and any personal belongings, which he would then sell at local market stalls. Investigators eventually linked a series of bodies, all male, all in their teens or early twenties, discovered unclothed and bearing the marks of manual strangulation. The exact number of victims remains uncertain, but official records attribute at least twenty deaths to him during this period.</p>
+
+      <h2 class="section-header">Evasion</h2>
+      <p>Sârca’s ability to evade detection for so long was a direct consequence of the chaotic wartime conditions. With law enforcement and state institutions focused on military efforts, internal security, and managing widespread civil unrest, the disappearance of destitute young men rarely triggered a significant investigation. His victims were often from the margins of society—orphans, runaways, or displaced persons—whose absence would not be immediately noted or reported by a stable family unit. Furthermore, the lack of centralised records and forensic science meant that connecting disparate murder cases across different jurisdictions was a near-impossible task. Sârca exploited this systemic dysfunction, moving between localities and relying on the anonymity afforded by a society preoccupied with larger conflicts. He was not a sophisticated criminal mastermind, but a patient opportunist who understood that in a time of great upheaval, the most vulnerable are often the most invisible.</p>
+
+      <h2 class="section-header">Capture</h2>
+      <p>His eventual capture led to a brief period of incarceration, which ended not through force, but through cunning opportunism. In the shifting political landscape of post-1944 Romania, Sârca acquired forged Soviet citizenship papers. Presenting these to overwhelmed or intimidated local officials, he secured his release from prison, leveraging the authority and fear the Soviet presence commanded. Once free, he did not flee or go into hiding but simply resumed his activities, a testament to the compulsive nature of his violence. He was recaptured in Oradea after his pattern was finally recognised by local authorities. This time, there would be no escape. The subsequent trial laid bare the full extent of his crimes, resulting in a sentence of two consecutive life terms.</p>
+
+      <h2 class="section-header">Legacy</h2>
+      <p>The case of Ioan Sârca served as a stark indictment of the conditions that allowed him to flourish. It revealed how a nation’s focus on geopolitical conflict can create profound vulnerabilities within its own borders, leaving its most defenceless citizens exposed to predation. His pragmatic, almost business-like approach to murder—killing for the value of a victim’s clothing—spoke to the extreme destitution of the era, where a human life could be extinguished for a few items to be sold at a market. Sârca himself remained an enigma of base impulse, an illiterate factory worker who became one of the country's most prolific serial killers. He showed no remorse for his actions during his trial or the long decades he spent in prison. He died at the Aiud Penitentiary in 1991, an old man whose violent history was a grim footnote in a turbulent chapter of his country's past.</p>
     </div>
-    <a href="/criminals/ioan-sarca.html" class="read-more">Read full profile →</a>
+
+    <div class="sources">
+      <div class="sources-label">Sources</div>
+      <a href="https://en.wikipedia.org/wiki/Ioan_S%C3%A2rca" target="_blank" rel="noopener">Wikipedia — Ioan Sârca</a>
+      <a href="https://en.wikipedia.org/wiki/List_of_serial_killers_by_country" target="_blank" rel="noopener">Wikipedia — List of Serial Killers by Country</a>
+    </div>
 
     <div class="tags">
       <span class="tag">Romania</span>
