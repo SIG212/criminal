@@ -149,7 +149,12 @@
     color: rgba(242,234,216,0.88); max-width: 560px;
   }
   .article-body p { margin-bottom: 1.4rem; }
-  .article-body p:first-child::first-letter {
+  .section-header {
+    font-family: 'Space Mono', monospace; font-size: 9px;
+    letter-spacing: 0.35em; text-transform: uppercase;
+    color: var(--gold); margin: 2rem 0 0.6rem; font-weight: 400;
+  }
+  .article-body p:first-of-type::first-letter {
     font-family: 'Playfair Display', Georgia, serif; font-size: 72px; font-weight: 900;
     float: left; line-height: 0.75; margin: 8px 10px 0 0; color: var(--red-light);
   }
