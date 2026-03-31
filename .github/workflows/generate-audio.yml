@@ -2,8 +2,8 @@ name: Generate Daily Criminal
 
 on:
   schedule:
-    - cron: '0 6 * * *'
-  workflow_dispatch:
+    - cron: '0 6 * * *'   # în fiecare zi la 06:00 UTC (08:00 România)
+  workflow_dispatch:        # permite și rulare manuală din GitHub UI
 
 jobs:
   generate:
@@ -23,8 +23,9 @@ jobs:
       - name: Generate article + audio
         run: node generate-daily.js
         env:
-          GEMINI_API_KEY:      ${{ secrets.GEMINI_API_KEY }}
-          ELEVENLABS_API_KEY:  ${{ secrets.ELEVENLABS_API_KEY }}
+          GEMINI_API_KEY:       ${{ secrets.GEMINI_API_KEY }}
+          AZURE_SPEECH_KEY:     ${{ secrets.AZURE_SPEECH_KEY }}
+          AZURE_SPEECH_REGION:  ${{ secrets.AZURE_SPEECH_REGION }}
 
       - name: Commit updated files
         run: |
