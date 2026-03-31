@@ -90,18 +90,31 @@ console.log(`Day ${dayNumber}: ${criminal.name} (${criminal.country})`);
 async function generateContent(criminal) {
   console.log('Calling Gemini 2.5 Pro...');
 
-  const systemPrompt = `You are a true crime writer with a literary noir style.
-Write criminal profiles like opening chapters of a crime novel — atmospheric, precise, cold.
-Think Thomas Harris. No headers, no bullets, only flowing prose. Always in English.`;
+  const systemPrompt = `You are a true crime journalist writing for a serious long-form publication.
+Your style is precise, factual, and restrained — like a seasoned detective reviewing a cold case file.
+No melodrama, no purple prose. Clinical where necessary, human where it matters.
+Think: the tone of a BBC documentary narrated by someone who has seen too much to be shocked anymore.
+Write in English.`;
 
-  const userPrompt = `Write TWO pieces about ${criminal.name}${criminal.alias ? ` ("${criminal.alias}")` : ''} from ${criminal.country}.
+  const userPrompt = `Write a 5-paragraph profile of ${criminal.name}${criminal.alias ? ` ("${criminal.alias}")` : ''} from ${criminal.country}.
 
 Wikipedia context: ${criminal.wiki_summary || 'No context available.'}
 Facts: active ${criminal.period}, ${criminal.victims} victims.
 
-Write 5 paragraphs, 600-800 words, literary noir prose.
-Cover: origins, crimes, investigation, capture, psychological and social meaning.
-Cinematic first sentence. No preamble. Pure flowing prose.`;
+Structure:
+- Paragraph 1: who they were before the crimes — background, context, ordinary life
+- Paragraph 2: the crimes — method, pattern, victims, timeline. Be specific: how did they select victims, what exactly happened, what did investigators find. Named victims where known. Do not sanitize but do not sensationalize.
+- Paragraph 3: how they evaded detection and why — institutional failures, luck, geography
+- Paragraph 4: capture and trial — how it ended
+- Paragraph 5: what the case revealed — about the system, the era, human nature
+
+Rules:
+- No cinematic opening lines
+- No metaphors about darkness or shadows
+- Specific details over general atmosphere
+- 600-800 words, pure prose, no headers
+- Do not add any labels, titles, or structural markers like "Part 1" or "Paragraph 1"
+- Start directly with the first sentence of the profile`;
 
   const body = {
     system_instruction: { parts: [{ text: systemPrompt }] },
@@ -129,8 +142,14 @@ Cinematic first sentence. No preamble. Pure flowing prose.`;
     process.exit(1);
   }
 
-  console.log(`Article generated: ${text.length} chars`);
-  return text.trim();
+  // Strip any structural labels Gemini might add despite instructions
+  const cleaned = text
+    .replace(/^(Part\s+\w+|Paragraph\s+\d+|Section\s+\d+)[:\s]*/gim, '')
+    .replace(/^\*\*.*?\*\*\s*/gm, '')
+    .trim();
+
+  console.log(`Article generated: ${cleaned.length} chars`);
+  return cleaned;
 }
 
 // ── Azure TTS: generate audio from full article ───────────────────────────────
