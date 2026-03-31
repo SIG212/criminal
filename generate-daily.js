@@ -2,37 +2,37 @@
  * generate-daily.js
  * -----------------
  * Runs daily via GitHub Actions.
- * 1. Reads criminals.json → picks today's criminal by day number
- * 2. Calls Gemini Flash to generate a literary noir article
- * 3. Updates index.html with new content
- * 4. Calls ElevenLabs to generate audio/current.mp3
+ * 1. Reads criminals.json → picks today's criminal
+ * 2. Calls Gemini 2.5 Pro to generate a literary noir article
+ * 3. Calls ElevenLabs to generate audio/current.mp3
+ * 4. Reads template.html, replaces placeholders → writes index.html
  *
  * Env vars required:
  *   GEMINI_API_KEY
  *   ELEVENLABS_API_KEY
  */
 
-const fs   = require('fs');
-const path = require('path');
+const fs    = require('fs');
+const path  = require('path');
 const https = require('https');
 
 // ── Config ────────────────────────────────────────────────────────────────────
 
 const GEMINI_API_KEY     = process.env.GEMINI_API_KEY;
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
-const ELEVENLABS_VOICE   = 'pNInz6obpgDQGcFmaJgB'; // Adam
+const ELEVENLABS_VOICE   = 'fjnwTZkKtQOJaYzGLa6n';
 const ELEVENLABS_MODEL   = 'eleven_multilingual_v2';
-const MAX_CHARS_FREE     = 2500; // ElevenLabs free tier limit per request
+const MAX_CHARS_FREE     = 2500;
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-function httpsPost(hostname, path, headers, body) {
+function httpsPost(hostname, urlPath, headers, body) {
   return new Promise((resolve, reject) => {
     const bodyStr = typeof body === 'string' ? body : JSON.stringify(body);
     const req = https.request(
       {
         hostname,
-        path,
+        path: urlPath,
         method: 'POST',
         headers: { 'Content-Length': Buffer.byteLength(bodyStr), ...headers }
       },
@@ -49,25 +49,25 @@ function httpsPost(hostname, path, headers, body) {
 }
 
 function getTodayDayNumber() {
-  // Day 1 = 2026-03-31 (launch date) — adjust to your actual launch date
   const launch = new Date('2026-03-31T00:00:00Z');
   const now    = new Date();
   const diff   = Math.floor((now - launch) / (1000 * 60 * 60 * 24));
-  return (diff % 365) + 1; // cycles through the year
+  return (diff % 365) + 1;
 }
 
 function escapeHtml(str) {
-  return str
+  if (!str) return '';
+  return String(str)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
 }
 
-function wrapParagraphs(text) {
+function textToParagraphs(text) {
   return text
     .split(/\n\n+/)
-    .map(p => p.trim())
+    .map(p => p.trim().replace(/\n/g, ' '))
     .filter(p => p.length > 0)
     .map(p => `      <p>${escapeHtml(p)}</p>`)
     .join('\n\n');
@@ -84,48 +84,28 @@ console.log(`Day ${dayNumber}: ${criminal.name} (${criminal.country})`);
 // ── Step 2: Generate article with Gemini ──────────────────────────────────────
 
 async function generateArticle(criminal) {
-  console.log('Calling Gemini Flash...');
+  console.log('Calling Gemini...');
 
   const systemPrompt = `You are a true crime writer with a literary noir style.
 You write criminal profiles that read like the opening chapter of a crime novel — atmospheric, precise, cold.
-Think Thomas Harris meets an Eastern European winter — or wherever this criminal is from.
-Never use headers, bullet points, or lists. Only flowing prose.
-Always write in English.`;
+Think Thomas Harris. Never use headers, bullet points, or lists. Only flowing prose. Write in English.`;
 
-  const userPrompt = `Write a 5-paragraph literary noir profile of ${criminal.name}${criminal.alias ? `, known as "${criminal.alias}"` : ''}, a serial killer from ${criminal.country}.
+  const userPrompt = `Write a 5-paragraph literary noir profile of ${criminal.name}${criminal.alias ? `, known as "${criminal.alias}"` : ''}, from ${criminal.country}.
 
-Background context from Wikipedia:
+Wikipedia context:
 ${criminal.wiki_summary || 'No additional context available.'}
 
-Known facts:
-- Active period: ${criminal.period}
-- Confirmed victims: ${criminal.victims}
-- Country: ${criminal.country}
+Facts: active ${criminal.period}, ${criminal.victims} victims, ${criminal.country}.
 
-Include:
-- Their origins and background
-- The crimes in detail
-- The investigation and how authorities responded
-- Capture and sentence
-- What they represent psychologically and socially
-
-Style rules:
-- Start with a cinematic first sentence, no preamble, no "Here is the profile" intro
-- Atmospheric, literary, cold — not sensationalist
-- 600–800 words total
-- Pure flowing prose, no headers, no bullets`;
+Rules:
+- Start with a cinematic first sentence, no preamble
+- Cover: origins, crimes, investigation, capture, psychological and social meaning
+- 600-800 words, pure flowing prose`;
 
   const body = {
-    system_instruction: {
-      parts: [{ text: systemPrompt }]
-    },
-    contents: [
-      { role: 'user', parts: [{ text: userPrompt }] }
-    ],
-    generationConfig: {
-      temperature: 0.85,
-      maxOutputTokens: 8192
-    }
+    system_instruction: { parts: [{ text: systemPrompt }] },
+    contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
+    generationConfig: { temperature: 0.85, maxOutputTokens: 8192 }
   };
 
   const { status, buffer } = await httpsPost(
@@ -158,34 +138,21 @@ Style rules:
 async function generateAudio(text) {
   console.log('Calling ElevenLabs...');
 
-  // Truncate to free tier limit
-  const audioText = text.length > MAX_CHARS_FREE
-    ? text.slice(0, MAX_CHARS_FREE)
-    : text;
-
+  const audioText = text.length > MAX_CHARS_FREE ? text.slice(0, MAX_CHARS_FREE) : text;
   if (text.length > MAX_CHARS_FREE) {
-    console.warn(`Text truncated from ${text.length} to ${MAX_CHARS_FREE} chars for free tier`);
+    console.warn(`Text truncated to ${MAX_CHARS_FREE} chars for free tier`);
   }
 
   const body = JSON.stringify({
     text: audioText,
     model_id: ELEVENLABS_MODEL,
-    voice_settings: {
-      stability: 0.45,
-      similarity_boost: 0.75,
-      style: 0.35,
-      use_speaker_boost: true
-    }
+    voice_settings: { stability: 0.45, similarity_boost: 0.75, style: 0.35, use_speaker_boost: true }
   });
 
   const { status, buffer } = await httpsPost(
     'api.elevenlabs.io',
     `/v1/text-to-speech/${ELEVENLABS_VOICE}`,
-    {
-      'xi-api-key': ELEVENLABS_API_KEY,
-      'Content-Type': 'application/json',
-      'Accept': 'audio/mpeg'
-    },
+    { 'xi-api-key': ELEVENLABS_API_KEY, 'Content-Type': 'application/json', 'Accept': 'audio/mpeg' },
     body
   );
 
@@ -196,113 +163,54 @@ async function generateAudio(text) {
 
   const audioDir = path.join(__dirname, 'audio');
   if (!fs.existsSync(audioDir)) fs.mkdirSync(audioDir);
-
-  const outputPath = path.join(audioDir, 'current.mp3');
-  fs.writeFileSync(outputPath, buffer);
+  fs.writeFileSync(path.join(audioDir, 'current.mp3'), buffer);
   console.log(`Audio saved (${(buffer.length / 1024).toFixed(1)} KB)`);
 }
 
-// ── Step 4: Update index.html ─────────────────────────────────────────────────
+// ── Step 4: Build index.html from template ────────────────────────────────────
 
-function updateHtml(criminal, articleText) {
-  console.log('Updating index.html...');
+function buildHtml(criminal, articleText) {
+  console.log('Building index.html from template...');
 
-  let html = fs.readFileSync('index.html', 'utf8');
+  const template = fs.readFileSync('template.html', 'utf8');
 
-  const today = new Date().toLocaleDateString('en-US', {
-    year: 'numeric', month: 'long', day: 'numeric'
-  });
+  const today       = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  const dayPadded   = String(criminal.day).padStart(3, '0');
+  const year        = new Date().getFullYear();
+  const countryCode = criminal.country.slice(0, 2).toUpperCase();
 
-  const dayPadded = String(criminal.day).padStart(3, '0');
+  const nameParts   = criminal.name.trim().split(/\s+/);
+  const nameDisplay = nameParts.length >= 2
+    ? `${nameParts.slice(0, -1).join(' ')}<br>${nameParts[nameParts.length - 1]}`
+    : criminal.name;
 
-  // Tags
-  const tags = (criminal.tags || [])
+  const aliasDisplay = criminal.alias ? `"${escapeHtml(criminal.alias)}"` : '&nbsp;';
+
+  const tagsHtml = (criminal.tags || [])
     .filter(t => t && t.length > 1)
     .map(t => `      <span class="tag">${escapeHtml(t)}</span>`)
     .join('\n');
 
-  // Split name for display (first + last on separate lines if two words)
-  const nameParts = criminal.name.trim().split(/\s+/);
-  const displayName = nameParts.length >= 2
-    ? `${nameParts.slice(0, -1).join(' ')}<br>${nameParts[nameParts.length - 1]}`
-    : criminal.name;
+  const articleHtml = textToParagraphs(articleText);
 
-  // Article paragraphs
-  const articleHtml = wrapParagraphs(articleText);
-
-  // Replacements
-  const replacements = [
-    // Page title
-    [
-      /<title>Criminal of the Day[^<]*<\/title>/,
-      `<title>Criminal of the Day — ${criminal.name}</title>`
-    ],
-    // Masthead date
-    [
-      /(<div class="masthead-date">)[^<]*/,
-      `$1${today} &nbsp;/&nbsp; Day ${dayPadded}`
-    ],
-    // Case number
-    [
-      /(<div class="case-number">Dosar \/ Case No\. )[^<]*/,
-      `$1${new Date().getFullYear()}-${criminal.country.slice(0,2).toUpperCase()}-${dayPadded}</div`
-    ],
-    // Stats
-    [
-      /(<div class="stat-pill"><span>Confirmed Victims<\/span><span>)[^<]*/,
-      `$1${escapeHtml(criminal.victims)}</span></div`
-    ],
-    [
-      /(<div class="stat-pill"><span>Active Period<\/span><span>)[^<]*/,
-      `$1${escapeHtml(criminal.period)}</span></div`
-    ],
-    [
-      /(<div class="stat-pill"><span>(?:Sentence|Died in prison)<\/span><span>)[^<]*/,
-      `$1${escapeHtml(criminal.sentence || '—')}</span></div`
-    ],
-    // Photo side label
-    [
-      /(<div class="photo-side-label">)[^<]*/,
-      `$1${escapeHtml(criminal.country)} · ${criminal.period}</div`
-    ],
-    // Day label
-    [
-      /(<div class="day-label">Day \d+ — )[^<]*/,
-      `$1${escapeHtml(criminal.country)}</div`
-    ],
-    // Criminal name
-    [
-      /(<h1 class="criminal-name">)[\s\S]*?(<\/h1>)/,
-      `$1${displayName}$2`
-    ],
-    // Alias
-    [
-      /(<div class="criminal-alias">)[^<]*/,
-      `$1${criminal.alias ? `"${escapeHtml(criminal.alias)}"` : '&nbsp;'}</div`
-    ],
-    // Article body
-    [
-      /(<div class="article-body" id="article-text">)[\s\S]*?(<\/div>)/,
-      `$1\n${articleHtml}\n    $2`
-    ],
-    // Player title
-    [
-      /(<div class="player-title">)[^<]*/,
-      `$1${escapeHtml(criminal.name)}${criminal.alias ? ` — ${escapeHtml(criminal.alias)}` : ''}</div`
-    ],
-    // Tags
-    [
-      /(<div class="tags">)[\s\S]*?(<\/div>)/,
-      `$1\n${tags}\n    $2`
-    ]
-  ];
-
-  for (const [pattern, replacement] of replacements) {
-    html = html.replace(pattern, replacement);
-  }
+  const html = template
+    .replace(/\{\{NAME\}\}/g,          escapeHtml(criminal.name))
+    .replace(/\{\{NAME_DISPLAY\}\}/g,  nameDisplay)
+    .replace(/\{\{ALIAS_DISPLAY\}\}/g, aliasDisplay)
+    .replace(/\{\{ALIAS\}\}/g,         escapeHtml(criminal.alias || criminal.name))
+    .replace(/\{\{COUNTRY\}\}/g,       escapeHtml(criminal.country))
+    .replace(/\{\{COUNTRY_CODE\}\}/g,  countryCode)
+    .replace(/\{\{PERIOD\}\}/g,        escapeHtml(criminal.period))
+    .replace(/\{\{VICTIMS\}\}/g,       escapeHtml(criminal.victims))
+    .replace(/\{\{SENTENCE\}\}/g,      escapeHtml(criminal.sentence || '—'))
+    .replace(/\{\{DATE\}\}/g,          today)
+    .replace(/\{\{DAY_PADDED\}\}/g,    dayPadded)
+    .replace(/\{\{YEAR\}\}/g,          String(year))
+    .replace(/\{\{ARTICLE\}\}/g,       articleHtml)
+    .replace(/\{\{TAGS\}\}/g,          tagsHtml);
 
   fs.writeFileSync('index.html', html, 'utf8');
-  console.log('index.html updated');
+  console.log('index.html built successfully');
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────
@@ -311,7 +219,7 @@ function updateHtml(criminal, articleText) {
   try {
     const article = await generateArticle(criminal);
     await generateAudio(article);
-    updateHtml(criminal, article);
+    buildHtml(criminal, article);
     console.log('\nAll done!');
   } catch (err) {
     console.error('Fatal error:', err);
