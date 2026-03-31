@@ -1,0 +1,22 @@
+{
+  "cleanUrls": false,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/criminals/:slug", "destination": "/criminals/:slug.html" }
+  ],
+  "headers": [
+    {
+      "source": "/audio/(.*)",
+      "headers": [
+        { "key": "Content-Type", "value": "audio/mpeg" },
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/criminals/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=3600" }
+      ]
+    }
+  ]
+}
