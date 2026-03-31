@@ -40,7 +40,6 @@
     overflow-x: hidden;
   }
 
-  /* Grain overlay */
   body::before {
     content: '';
     position: fixed;
@@ -51,7 +50,6 @@
     opacity: 0.6;
   }
 
-  /* MASTHEAD */
   .masthead {
     border-bottom: 1px solid var(--border);
     padding: 1.2rem 2rem;
@@ -87,7 +85,6 @@
     color: var(--red-light);
   }
 
-  /* HERO SECTION */
   .hero {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -96,7 +93,6 @@
     z-index: 1;
   }
 
-  /* LEFT: photo side */
   .hero-photo {
     position: relative;
     overflow: hidden;
@@ -113,17 +109,6 @@
     max-width: 90%;
   }
 
-  .photo-frame img {
-    width: 100%;
-    height: 440px;
-    object-fit: cover;
-    object-position: top center;
-    display: block;
-    filter: grayscale(100%) contrast(1.1) brightness(0.85);
-    border: 1px solid var(--border-strong);
-  }
-
-  /* Mugshot placeholder if image fails */
   .photo-placeholder {
     width: 100%;
     height: 440px;
@@ -136,9 +121,7 @@
     gap: 12px;
   }
 
-  .photo-placeholder svg {
-    opacity: 0.2;
-  }
+  .photo-placeholder svg { opacity: 0.2; }
 
   .photo-overlay {
     position: absolute;
@@ -154,18 +137,6 @@
     color: var(--gold);
     text-transform: uppercase;
     margin-bottom: 6px;
-  }
-
-  .victim-count {
-    display: flex;
-    gap: 8px;
-  }
-
-  .victim-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--red-light);
-    margin-top: 6px;
   }
 
   .photo-bg-text {
@@ -213,11 +184,8 @@
     color: var(--paper-dark);
   }
 
-  .stat-pill span:last-child {
-    color: var(--red-light);
-  }
+  .stat-pill span:last-child { color: var(--red-light); }
 
-  /* RIGHT: text side */
   .hero-text {
     padding: 4rem 4rem 4rem 5rem;
     display: flex;
@@ -251,51 +219,14 @@
     font-size: 16px;
     font-style: italic;
     color: var(--red-light);
-    margin-bottom: 2rem;
+    margin-bottom: 0;
     letter-spacing: 0.02em;
   }
 
   .audio-section {
     margin-top: 1.5rem;
     margin-bottom: 0;
-    padding-bottom: 0;
     border-top: none;
-  }
-
-  .divider {
-    width: 48px;
-    height: 1px;
-    background: var(--gold);
-    margin: 1.5rem 0;
-    opacity: 0.5;
-  }
-
-  .article-body {
-    font-size: 18px;
-    line-height: 1.8;
-    color: rgba(242, 234, 216, 0.88);
-    max-width: 560px;
-  }
-
-  .article-body p {
-    margin-bottom: 1.4rem;
-  }
-
-  .article-body p:first-child::first-letter {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 72px;
-    font-weight: 900;
-    float: left;
-    line-height: 0.75;
-    margin: 8px 10px 0 0;
-    color: var(--red-light);
-  }
-
-  /* AUDIO PLAYER */
-  .audio-section {
-    margin-top: 2.5rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--border);
   }
 
   .audio-label {
@@ -336,18 +267,11 @@
     background: radial-gradient(circle at 40% 40%, rgba(255,255,255,0.12), transparent 60%);
   }
 
-  .play-btn:hover {
-    background: var(--red-light);
-    transform: scale(1.05);
-  }
-
+  .play-btn:hover { background: var(--red-light); transform: scale(1.05); }
   .play-btn:active { transform: scale(0.97); }
-
   .play-btn svg { position: relative; z-index: 1; }
 
-  .player-info {
-    flex: 1;
-  }
+  .player-info { flex: 1; }
 
   .player-title {
     font-family: 'Crimson Pro', serif;
@@ -382,7 +306,33 @@
     margin-top: 6px;
   }
 
-  /* TAGS */
+  .divider {
+    width: 48px;
+    height: 1px;
+    background: var(--gold);
+    margin: 1.5rem 0;
+    opacity: 0.5;
+  }
+
+  .article-body {
+    font-size: 18px;
+    line-height: 1.8;
+    color: rgba(242, 234, 216, 0.88);
+    max-width: 560px;
+  }
+
+  .article-body p { margin-bottom: 1.4rem; }
+
+  .article-body p:first-child::first-letter {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 72px;
+    font-weight: 900;
+    float: left;
+    line-height: 0.75;
+    margin: 8px 10px 0 0;
+    color: var(--red-light);
+  }
+
   .tags {
     display: flex;
     flex-wrap: wrap;
@@ -400,7 +350,6 @@
     text-transform: uppercase;
   }
 
-  /* FOOTER */
   footer {
     border-top: 1px solid var(--border);
     padding: 2rem;
@@ -414,7 +363,6 @@
     z-index: 1;
   }
 
-  /* Decorative red corner line */
   .hero-text::before {
     content: '';
     position: absolute;
@@ -424,12 +372,8 @@
     background: var(--red);
   }
 
-  /* RESPONSIVE */
   @media (max-width: 860px) {
-    .hero {
-      grid-template-columns: 1fr;
-      min-height: auto;
-    }
+    .hero { grid-template-columns: 1fr; min-height: auto; }
     .hero-photo { min-height: 400px; }
     .hero-text {
       padding: 2.5rem 1.5rem;
@@ -440,7 +384,6 @@
     .article-body p:first-child::first-letter { font-size: 52px; }
   }
 
-  /* Pulse animation when playing */
   @keyframes pulse-ring {
     0% { box-shadow: 0 0 0 0 rgba(139, 26, 26, 0.5); }
     70% { box-shadow: 0 0 0 12px rgba(139, 26, 26, 0); }
@@ -452,36 +395,31 @@
     from { opacity: 0; transform: translateY(18px); }
     to { opacity: 1; transform: translateY(0); }
   }
-  .hero-text > * {
-    animation: fade-in 0.6s ease both;
-  }
+  .hero-text > * { animation: fade-in 0.6s ease both; }
   .day-label { animation-delay: 0.1s; }
   .criminal-name { animation-delay: 0.2s; }
   .criminal-alias { animation-delay: 0.3s; }
-  .divider { animation-delay: 0.35s; }
-  .article-body { animation-delay: 0.4s; }
-  .audio-section { animation-delay: 0.55s; }
-  .tags { animation-delay: 0.65s; }
+  .audio-section { animation-delay: 0.35s; }
+  .divider { animation-delay: 0.4s; }
+  .article-body { animation-delay: 0.45s; }
+  .tags { animation-delay: 0.6s; }
 </style>
 </head>
 <body>
 
-<!-- MASTHEAD -->
 <header class="masthead">
   <div class="masthead-logo">Criminal of the Day</div>
   <div class="masthead-date">March 31, 2026 &nbsp;/&nbsp; Day 001</div>
   <div class="issue-number">Est. 2026</div>
 </header>
 
-<!-- HERO -->
 <main class="hero">
 
   <!-- PHOTO COLUMN -->
   <div class="hero-photo">
     <div class="photo-bg-text">KILLER</div>
     <div class="photo-frame">
-      <!-- Fallback mugshot silhouette since no public domain photo exists -->
-      <div class="photo-placeholder" id="photo-container">
+      <div class="photo-placeholder">
         <svg width="90" height="110" viewBox="0 0 90 110" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="45" cy="32" r="24" fill="#f2ead8"/>
           <path d="M0 110 C0 78 90 78 90 110" fill="#f2ead8"/>
@@ -490,26 +428,24 @@
       </div>
 
       <div class="photo-overlay">
-        <div class="case-number">Dosar / Case No. 2026-RO-001</div</div>
+        <div class="case-number">Case No. 2026-RO-001</div>
         <div class="stat-pills">
-          <div class="stat-pill"><span>Confirmed Victims</span><span>20+</span></div</span></div>
-          <div class="stat-pill"><span>Active Period</span><span>1943–1945</span></div</span></div>
-          <div class="stat-pill"><span>Sentence</span><span>Life (×2)</span></div</span></div>
-          <div class="stat-pill"><span>Died in prison</span><span>1991</span></div>
+          <div class="stat-pill"><span>Confirmed Victims</span><span>20+</span></div>
+          <div class="stat-pill"><span>Active Period</span><span>1943–1945</span></div>
+          <div class="stat-pill"><span>Sentence</span><span>Life (×2)</span></div>
         </div>
       </div>
-      <div class="photo-side-label">Romania · 1943–1945</div</div>
+      <div class="photo-side-label">Romania · 1943–1945</div>
     </div>
   </div>
 
   <!-- TEXT COLUMN -->
   <div class="hero-text">
-    <div class="day-label">Day 001 — Romania</div</div>
+    <div class="day-label">Day 001 — Romania</div>
 
     <h1 class="criminal-name">Ioan<br>Sârca</h1>
-    <div class="criminal-alias">"The Monster from Valcău"</div</div>
+    <div class="criminal-alias">"The Monster from Valcău"</div>
 
-    <!-- AUDIO PLAYER — sub nume -->
     <div class="audio-section">
       <div class="audio-label">Listen to this profile</div>
       <div class="player-row">
@@ -519,7 +455,7 @@
           </svg>
         </button>
         <div class="player-info">
-          <div class="player-title">Ioan Sârca — The Monster from Valcău</div</div>
+          <div class="player-title">Ioan Sârca — The Monster from Valcău</div>
           <div class="player-progress">
             <div class="player-bar" id="progress-bar"></div>
           </div>
@@ -531,18 +467,17 @@
     <div class="divider"></div>
 
     <div class="article-body" id="article-text">
-      <p>In the gray churn of wartime Romania, where mud swallowed the roads and shadows clung to the corners of every village, a new kind of void took shape. It wore the face of a man named Ioan Sârca, a factory worker from Valcău de Jos whose hands were stained with grease and something darker. He was a creature of the periphery, an illiterate man whose mind was an empty slate upon which only the crudest impulses were scrawled. The world saw a labourer, a simple cog in the sputtering machine of the state, but Sârca was an absence, a walking negation. He moved through the desperate landscape of 1943 not as a citizen or a soldier, but as a predator whose territory was defined by the poverty of others, his instincts sharpened by the ambient chaos of a nation caught between two collapsing empires.</p>
+      <p>In the long shadow of a war that bled nations dry, another kind of predator learned to walk among the ghosts of men. He was a rumor before he was a man, a whisper of dread that coiled in the soot-stained air of Romanian towns where hunger was a constant, keening sound. This specter had a name, Ioan Sârca, but the name meant nothing. He was a factory worker, an illiterate slab of muscle and appetite, a nullity etched against the grand, violent canvas of history. Yet in the anonymity of chaos, a nullity can become an abyss, and into that abyss, the desperate and the hopeful are easily drawn. He moved through the fractured landscape of 1943 not as a soldier or a citizen, but as a carrion creature, his eyes scanning the crowds of displaced, hungry youths for the ones whose light was already dimming.</p>
 
-      <p>His method was a cruel parody of salvation. To the boys and young men idling on street corners, their futures as thin and frayed as their collars, he offered the one thing more valuable than bread: a job. The promise of work was a key that unlocked their trust, leading them from the relative safety of the town into the lonely quiet of the countryside. There, on a muddy track or in a fallow field, the transaction would be completed. Sârca did not use a knife or a gun; his violence was intimate, the pressure of his hands on a thin neck, the final, frantic pulse fading into the indifferent air. He was a harvester of last breaths. After, he would strip the body of its clothes, folding a worn coat or a pair of scuffed boots with the dispassion of a merchant. He would then take these second-hand remnants of a life to the market stalls and sell them for a handful of lei, converting human hope into spare change.</p>
+      <p>His method was an insult to hope itself. He did not stalk or hunt in the conventional sense; he merely offered a promise, the most potent currency in a bankrupt world. To boys on the cusp of manhood, their faces gaunt with poverty and their hands eager for honest work, he was a potential savior. He spoke of jobs, of a warm meal, of a future that was more than a shivering wait for the next sunrise. He would lead them away from the grimy train stations and the crowded market squares, down muddy lanes where the sounds of the city grew faint. There, in the quiet desolation, the promise would be broken. His thick, calloused hands, accustomed to the brute labor of the factory, would close around a thin neck, and the last thing his victims would know was the suffocating finality of a lie. He would then strip the cooling bodies of their worn coats and patched trousers, folding them with a workman’s care before selling a boy’s last tangible presence for a handful of crumpled Lei at a market stall.</p>
 
-      <p>For two years, he operated within the static of war. The authorities, the Siguranța, were preoccupied with partisans, spies, and the grinding logistics of survival. The disappearance of a boy was a tragedy, but in a world of mass graves and missing armies, it was a quiet one, easily lost in the noise. Sârca was a ghost, his victims’ identities dissolving as quickly as their bodies returned to the earth. When he was finally caught, it was a brief flicker of order in the chaos, a monster caged. But the cage was flimsy. With the practiced cunning of a rat, he acquired forged Soviet citizenship papers—a sacrament of the new order—and simply walked out of prison, a bureaucratic phantom slipping back into the world to resume his silent, grim work.</p>
+      <p>For two years, he was a phantom feeding on the margins. The authorities, grappling with the death throes of one regime and the birth pangs of another, had little time for missing boys who might have run off, been conscripted, or simply vanished into the great, grinding machinery of the war. His victims were footnotes in a ledger of continental slaughter. When he was finally apprehended, the sheer scale of his depravity was a cold shock, a private horror that stood apart from the public spectacle of war. But Sârca was a creature of survival. From a prison that could not hold him, he procured forged Soviet citizenship papers, a new skin to cover the monster. He slipped through the bars of one history and into the chaos of the next, and the killing began again, his appetite undiminished by a brief encounter with justice.</p>
 
-      <p>His second reign was shorter. The pattern was recognized, the whispers coalesced into a name, and the net finally closed around him in the city of Oradea. There was no dramatic confession, no plea for understanding. In the courtroom, Ioan Sârca was a block of granite, his gaze empty, his conscience a sealed chamber. The legal language used to condemn him—murder, rape, robbery—seemed like sterile, inadequate words for the cold, methodical erasure he had practiced. He was given two life sentences, a legal tautology for a man who would never again see freedom, and was sent to the deep, gray silence of the prison at Aiud. There, for decades, he simply existed, a relic of a forgotten terror, breathing the same stale air year after year.</p>
+      <p>His recapture in Oradea brought the man himself into the stark, unforgiving light. There was no labyrinthine mind to unpack, no elegant architecture of evil to deconstruct. Before his interrogators stood a block of a man, unyielding and unlettered, his worldview circumscribed by the simple mechanics of need and acquisition. Remorse was a language he did not speak. The lives he had taken were not registered as tragedies, but as transactions that had been completed. He was a psychological void, a space where empathy and conscience should have been. Psychiatrists and criminologists found themselves staring into a cold, flat plain of pure impulse, a human engine that ran on nothing but the fuel of another’s destruction. He had killed for the clothes on their backs, and that, in his mind, was reason enough.</p>
 
-      <p>Ioan Sârca represented more than simple sadism; he was a symptom of a collapsed world. He was the human vacuum created when society breaks down, when the value of a life can be measured by the price of its clothing. He was not a mastermind or a creature of complex pathology, but a thing of pure, transactional appetite who understood instinctively that in a time of absolute desperation, the promise of a future is the most effective lure of all. He died in his cell in 1991, an old man whose crimes were a fading footnote from a darker age. He passed away without remorse, his silence the final, damning proof that the void he had carried within him had finally, and completely, consumed what was left of the man.</p>
+      <p>Ioan Sârca was not an anomaly; he was a concentration. He was the human expression of the rot that sets in when society atomizes, when the bonds of community are dissolved by desperation. He was a vulture who thrived not on the dead, but on the dying hope of the young. Sentenced to two life terms, he withered away for decades in the gray anonymity of a prison cell, a relic of a savage time. He died in 1991, an old man whose evil had become a footnote, his name a fading stain on the archives. But the Monster from Valcău remains a testament to the simple, terrifying truth that when the world turns its back, something is always waiting in the dark to feed on those who are left behind.</p>
     </div>
 
-    <!-- TAGS -->
     <div class="tags">
       <span class="tag">Romania</span>
       <span class="tag">1940s</span>
@@ -550,10 +485,11 @@
       <span class="tag">Died in Prison</span>
     </div>
   </div>
+
 </main>
 
 <footer>
-  &copy; 2026 Criminal of the Day &nbsp;·&nbsp; One case. Every day. &nbsp;·&nbsp; criminaloftheday.com
+  &copy; 2026 Criminal of the Day &nbsp;·&nbsp; One case. Every day.
 </footer>
 
 <script>
@@ -569,17 +505,9 @@
   const PLAY_ICON  = `<polygon points="5,3 19,12 5,21"/>`;
   const PAUSE_ICON = `<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>`;
 
-  audioEl.preload = 'metadata'; // încarcă durata fără să descarce tot fișierul
-
-  audioEl.onended = () => {
-    progressBar.style.width = '100%';
-    setTimeout(stopPlayer, 400);
-  };
-
-  audioEl.onerror = () => {
-    statusEl.textContent = 'Audio not available yet.';
-    stopPlayer();
-  };
+  audioEl.preload = 'metadata';
+  audioEl.onended = () => { progressBar.style.width = '100%'; setTimeout(stopPlayer, 400); };
+  audioEl.onerror = () => { statusEl.textContent = 'Audio not available yet.'; stopPlayer(); };
 
   function toggleAudio() {
     if (isPlaying) { pausePlayer(); return; }
