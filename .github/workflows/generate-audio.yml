@@ -34,7 +34,3 @@ jobs:
           git diff --staged --quiet || git commit -m "chore: day $(date +%Y-%m-%d) [skip ci]"
           git push
           jobs:
-  generate:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write    # ← asta îi permite să facă git push
