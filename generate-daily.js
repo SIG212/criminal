@@ -57,12 +57,26 @@ function escapeHtml(str) {
     .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
+const PARAGRAPH_HEADERS = [
+  'Background',
+  'The Crimes',
+  'Evasion',
+  'Capture',
+  'Legacy'
+];
+
 function textToParagraphs(text) {
-  return text.split(/\n\n+/)
+  const paras = text.split(/\n\n+/)
     .map(p => p.trim().replace(/\n/g, ' '))
-    .filter(p => p.length > 0)
-    .map(p => `      <p>${escapeHtml(p)}</p>`)
-    .join('\n\n');
+    .filter(p => p.length > 0);
+
+  return paras.map((p, i) => {
+    const header = PARAGRAPH_HEADERS[i];
+    const headerHtml = header
+      ? `      <h2 class="section-header">${header}</h2>\n`
+      : '';
+    return `${headerHtml}      <p>${escapeHtml(p)}</p>`;
+  }).join('\n\n');
 }
 
 function getFirstParagraph(text) {
