@@ -20,7 +20,7 @@ const https = require('https');
 const GEMINI_API_KEY      = process.env.GEMINI_API_KEY;
 const AZURE_SPEECH_KEY    = process.env.AZURE_SPEECH_KEY;
 const AZURE_SPEECH_REGION = process.env.AZURE_SPEECH_REGION; // e.g. "eastus"
-const AZURE_VOICE         = 'en-US-AndrewMultilingualNeural'; // cinematic British voice
+const AZURE_VOICE         = 'en-GB-OllieMultilingualNeural'; // cinematic British voice
 
 // ── HTTP helper ───────────────────────────────────────────────────────────────
 
