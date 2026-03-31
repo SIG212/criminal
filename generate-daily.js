@@ -204,9 +204,11 @@ async function generateAudio(slug, text) {
   const audioDir = path.join(__dirname, 'audio');
   if (!fs.existsSync(audioDir)) fs.mkdirSync(audioDir, { recursive: true });
 
-  const outputPath = path.join(audioDir, `${slug}.mp3`);
-  fs.writeFileSync(outputPath, buffer);
-  console.log(`Audio saved: audio/${slug}.mp3 (${(buffer.length / 1024).toFixed(1)} KB)`);
+  // Salvăm cu slug pentru pagina individuală
+  fs.writeFileSync(path.join(audioDir, `${slug}.mp3`), buffer);
+  // Salvăm și ca current.mp3 pentru homepage
+  fs.writeFileSync(path.join(audioDir, 'current.mp3'), buffer);
+  console.log(`Audio saved: audio/${slug}.mp3 + audio/current.mp3 (${(buffer.length / 1024).toFixed(1)} KB)`);
 }
 
 // ── Build criminal page ───────────────────────────────────────────────────────
