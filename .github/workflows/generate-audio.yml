@@ -2,7 +2,7 @@ name: Generate Daily Criminal
 
 on:
   schedule:
-    - cron: '0 6 * * *'   # în fiecare zi la 06:00 UTC (08:00 România)
+    - cron: '0 7 * * *'   # în fiecare zi la 06:00 UTC (08:00 România)
   workflow_dispatch:        # permite și rulare manuală din GitHub UI
 
 jobs:
@@ -31,6 +31,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add index.html audio/current.mp3
+          git add index.html archive.html audio/ criminals/
           git diff --staged --quiet || git commit -m "chore: day $(date +%Y-%m-%d) [skip ci]"
           git push
