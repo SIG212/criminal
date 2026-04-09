@@ -20,7 +20,7 @@ const https = require('https');
 const GEMINI_API_KEY      = process.env.GEMINI_API_KEY;
 const AZURE_SPEECH_KEY    = process.env.AZURE_SPEECH_KEY;
 const AZURE_SPEECH_REGION = process.env.AZURE_SPEECH_REGION; // e.g. "eastus"
-const AZURE_VOICE         = 'en-GB-OllieMultilingualNeural'; // cinematic British voice
+const AZURE_VOICE         = 'en-GB-RyanNeural'; // cinematic British voice
 
 // ── HTTP helper ───────────────────────────────────────────────────────────────
 
@@ -358,17 +358,23 @@ function buildArchive() {
   const template = fs.readFileSync('template-archive.html', 'utf8');
   const criminalsDir = path.join(__dirname, 'criminals');
 
+  const launch = new Date('2026-03-31T00:00:00Z');
+
   const published = criminals
     .filter(c => fs.existsSync(path.join(criminalsDir, `${c.slug}.html`)))
     .sort((a, b) => b.day - a.day);
 
   const archiveCards = published
-    .map(c => `  <a href="/criminals/${c.slug}.html" class="archive-card">
-    <div class="archive-card-day">Day ${String(c.day).padStart(3,'0')} · ${escapeHtml(c.country)}</div>
+    .map(c => {
+      const pubDate = new Date(launch.getTime() + (c.day - 1) * 86400000);
+      const dateStr = pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+      return `  <a href="/criminals/${c.slug}.html" class="archive-card">
+    <div class="archive-card-day">Day ${String(c.day).padStart(3,'0')} · ${dateStr}</div>
     <div class="archive-card-name">${escapeHtml(c.name)}</div>
     ${c.alias ? `<div class="archive-card-alias">"${escapeHtml(c.alias)}"</div>` : ''}
-    <div class="archive-card-meta">${escapeHtml(c.period)} · ${escapeHtml(c.victims)} victims</div>
-  </a>`)
+    <div class="archive-card-meta">${escapeHtml(c.country)} · ${escapeHtml(c.period)} · ${escapeHtml(c.victims)} victims</div>
+  </a>`;
+    })
     .join('\n');
 
   const countries = new Set(published.map(c => c.country)).size;
